@@ -18,7 +18,7 @@ const Searchbar = ({ onSubmit }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    if (searchValue.trim === '') {
+    if (searchValue.trim() === '') {
       toast.error('Enter something!');
       return;
     }
