@@ -1,4 +1,3 @@
-// import React, { Component } from 'react';
 import { ImagesGallery } from './ImagesGallery.styled';
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageItem';
 

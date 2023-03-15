@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { GlobalStyle } from 'GlobalStyle';
 import { Layout } from './Layout';
 import { Toaster } from 'react-hot-toast';
@@ -10,112 +10,100 @@ import SearchBar from './SearchBar';
 import Button from './Button';
 import Spiner from './Loader/Loader';
 
-class App extends Component {
-  state = {
-    searchValue: '',
-    fotos: [],
-    error: null,
-    status: 'idle',
-    page: 1,
-    showModal: false,
-    url: {
-      srcLarge: '',
-      altLarge: '',
-    },
-  };
+const App = () => {
+  const [searchValue, setSearchValue] = useState('');
+  const [fotos, setFotos] = useState([]);
+  // const [error, setError] = useState(null);
+  const [status, setStatus] = useState('idle');
+  const [page, setPage] = useState({ currentPage: 1, nextPage: 1 });
+  const [showModal, setShowModal] = useState(false);
+  const [srcLarge, setSrcLarge] = useState('');
+  const [altLarge, setAltLarge] = useState('');
 
-  toggleModal = event => {
+  const toggleModal = event => {
     if (event !== null) {
-      this.setState({
-        url: {
-          srcLarge: event.target.currentSrc,
-          altLarge: event.target.alt,
-        },
-      });
+      setSrcLarge(event.target.currentSrc);
+      setAltLarge(event.target.alt);
     }
 
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
+    setShowModal(prevState => !prevState);
   };
 
-  handleFormSubmit = searchValue => {
-    this.setState({ searchValue, page: 1, fotos: [] });
+  const handleFormSubmit = searchValue => {
+    setSearchValue(searchValue);
+    setPage(1);
+    setFotos([]);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.searchValue !== this.state.searchValue) {
-      this.setState({ status: 'pending' });
+  useEffect(() => {
+    if (searchValue === '') {
+      return;
+    }
 
-      getImages(this.state.searchValue.trim(), this.state.page)
+    setStatus('pending');
+
+    if (setSearchValue !== searchValue || setPage !== page) {
+      getImages(searchValue, page)
         .then(response => response.json())
         .then(data => {
-          this.setState({ fotos: data.hits, status: 'resolved' });
+          setFotos(data.hits);
+          setStatus('resolved');
         });
     }
-    if (
-      prevState.searchValue !== this.state.searchValue ||
-      prevState.page !== this.state.page
-    ) {
-      getImages(this.state.searchValue.trim(), this.state.page)
-        .then(response => response.json())
-        .then(data => {
-          this.setState({
-            fotos: [...this.state.fotos, ...data.hits],
-            status: 'resolved',
-          });
-        });
-    }
+
+    // if (setSearchValue !== searchValue || setPage !== page) {
+    //   getImages(searchValue, page)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       setFotos(prevFotos => [...prevFotos, ...data.hits]);
+    //       setStatus('resolved');
+    //     });
+    // }
+  }, [page, searchValue]);
+
+  const loadMoreImages = () => {
+    setPage(prevState => prevState + 1);
+  };
+
+  if (status === 'pending') {
+    return <Spiner />;
   }
 
-  loadMoreImages = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
+  // if (status === 'rejected') {
+  //   return <h2>{error}</h2>;
+  // }
 
-  render() {
-    const { searchValue, page, showModal, url, error, fotos, status } =
-      this.state;
-
-    if (status === 'pending') {
-      return <Spiner />;
-    }
-
-    if (status === 'rejected') {
-      return <h2>{error}</h2>;
-    }
-
-    return (
-      <Layout>
-        <GlobalStyle />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 1500,
-          }}
-        />
-        <SearchBar onSubmit={this.handleFormSubmit} />
-        <ImageGallery
-          items={this.state.fotos}
-          searchValue={searchValue}
-          page={page}
-          onImageClick={this.toggleModal}
-        />
-        <BtnContainer>
-          {fotos.length > 0 && status === 'resolved' && (
-            <Button onLoadMoreClick={this.loadMoreImages} />
-          )}
-        </BtnContainer>
-
-        {showModal && (
-          <Modal
-            srcLarge={url.srcLarge}
-            altLarge={url.altLarge}
-            onModalClick={this.toggleModal}
-          />
+  return (
+    <Layout>
+      <GlobalStyle />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 1500,
+        }}
+      />
+      <SearchBar onSubmit={handleFormSubmit} />
+      <ImageGallery
+        items={fotos}
+        searchValue={searchValue}
+        page={page}
+        onImageClick={toggleModal}
+      />
+      <BtnContainer>
+        {fotos.length > 0 && status === 'resolved' && (
+          <Button onLoadMoreClick={loadMoreImages} />
         )}
-      </Layout>
-    );
-  }
-}
+      </BtnContainer>
+
+      {showModal && (
+        <Modal
+          srcLarge={srcLarge}
+          altLarge={altLarge}
+          onModalClick={toggleModal}
+        />
+      )}
+    </Layout>
+  );
+};
 
 export default App;
