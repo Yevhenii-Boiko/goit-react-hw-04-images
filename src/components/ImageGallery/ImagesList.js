@@ -1,7 +1,7 @@
 import { ImagesGallery } from './ImagesGallery.styled';
-import ImageGalleryItem from 'components/ImageGalleryItem/ImageItem';
+import { ImageGalleryItem } from '../ImageGalleryItem/ImageItem';
 
-const ImageGallery = ({ items, onImageClick }) => {
+export const ImageGallery = ({ items, onImageClick }) => {
   return (
     <div>
       <ImagesGallery>
@@ -17,5 +17,3 @@ const ImageGallery = ({ items, onImageClick }) => {
     </div>
   );
 };
-
-export default ImageGallery;

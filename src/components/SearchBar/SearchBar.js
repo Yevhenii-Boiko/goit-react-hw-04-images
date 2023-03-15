@@ -9,7 +9,7 @@ import {
 } from './SearchBar.styled';
 import { FaSearch } from 'react-icons/fa';
 
-const Searchbar = ({ onSubmit }) => {
+export const Searchbar = ({ onSubmit }) => {
   const [searchValue, setSearchValue] = useState('');
 
   const handleNameChange = event => {
@@ -47,5 +47,3 @@ const Searchbar = ({ onSubmit }) => {
     </SearchBar>
   );
 };
-
-export default Searchbar;

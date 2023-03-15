@@ -4,7 +4,7 @@ import { ModalStyled, Overlay } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-const Modal = ({ srcLarge, altLarge, onModalClick }) => {
+export const Modal = ({ srcLarge, altLarge, onModalClick }) => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
 
@@ -34,5 +34,3 @@ const Modal = ({ srcLarge, altLarge, onModalClick }) => {
     modalRoot
   );
 };
-
-export default Modal;

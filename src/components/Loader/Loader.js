@@ -2,7 +2,7 @@ import React from 'react';
 import { RotatingLines } from 'react-loader-spinner';
 import { Container } from './Loader.styled';
 
-const Spiner = () => {
+export const Spiner = () => {
   return (
     <Container>
       <RotatingLines
@@ -15,5 +15,3 @@ const Spiner = () => {
     </Container>
   );
 };
-
-export default Spiner;

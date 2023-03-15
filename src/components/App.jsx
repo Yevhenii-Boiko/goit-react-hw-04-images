@@ -4,14 +4,14 @@ import { Layout } from './Layout';
 import { Toaster, toast } from 'react-hot-toast';
 import { getImages } from 'services/ApiService';
 import { BtnContainer } from './Button/Button.styled';
-import ImageGallery from './ImageGallery/ImagesList';
-import Modal from './Modal';
-import SearchBar from './SearchBar';
-import Button from './Button';
-import Spiner from './Loader/Loader';
+import { ImageGallery } from './ImageGallery/ImagesList';
+import { Modal } from './Modal/Modal';
+import { Searchbar } from './SearchBar/SearchBar';
+import { Button } from './Button/Button';
+import { Spiner } from './Loader/Loader';
 import { nanoid } from 'nanoid';
 
-const App = () => {
+export const App = () => {
   const [searchValue, setSearchValue] = useState('');
   const [fotos, setFotos] = useState([]);
   const [error, setError] = useState(null);
@@ -90,7 +90,7 @@ const App = () => {
           duration: 1500,
         }}
       />
-      <SearchBar onSubmit={handleFormSubmit} />
+      <Searchbar onSubmit={handleFormSubmit} />
       <ImageGallery
         items={fotos}
         searchValue={searchValue}
@@ -115,5 +115,3 @@ const App = () => {
     </Layout>
   );
 };
-
-export default App;
